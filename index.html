@@ -19,14 +19,16 @@
         }
 
         body {
-            font-family: 'Open Sans', 'Noto Sans TC', 'Microsoft JhengHei', Calibri, Arial, sans-serif;
+            /* 調整字型順序：優先讀取本機皆有的無襯線微軟正黑體與 Arial，移除需要聯網的 Google Fonts */
+            font-family: Calibri, 'Microsoft JhengHei', 'PingFang TC', Arial, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
-            line-height: 1.8;          /* 寬敞的行距 */
+            line-height: 1.8;
             margin: 0;
             padding: 0;
-            font-size: 18px;           /* 全面放大字體，確保清晰 */
+            font-size: 18px; /* 依然保持您喜歡的大字級 */
         }
+
 
         /* 英文語系專屬微調 */
         .lang-en {
