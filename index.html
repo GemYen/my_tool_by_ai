@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>空間初衷與小叮嚀 | Our Story & Friendly Reminder</title>
+    <!-- 載入與 Calibri 風格相近、現代且線條均勻的 Google Fonts 中英文字體 -->
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Open+Sans:wght@400;600&family=Noto+Sans+TC:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #f4f8fb;       /* 舒適微甜的淡藍色背景 */
+            --text-color: #2c3e50;     /* 深藍灰文字，線條清晰易讀 */
+            --card-bg: #ffffff;        /* 純白卡片 */
+            --primary-color: #2f80ed;  /* 經典洗鍊藍 */
+            --border-color: #d6e4f0;   /* 淡藍色邊框 */
+        }
+
+        body {
+            /* 優先使用微軟正黑體、Calibri 與 Open Sans，皆為粗細一致的無襯線字體 */
+            font-family: 'Open Sans', 'Noto Sans TC', 'Microsoft JhengHei', Calibri, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.8;          /* 寬敞的行距 */
+            margin: 0;
+            padding: 0;
+            font-size: 18px;           /* 全面放大字體，確保清晰 */
+        }
+
+        /* 英文語系專屬微調 */
+        .lang-en {
+            font-size: 19px;           /* 英文尺寸微調放大 */
+            letter-spacing: 0.3px;     /* 微幅增加字距，提升現代感 */
+        }
+
+        header {
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.2rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 750px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-weight: 600;
+            font-size: 1.4rem;
+            color: var(--primary-color);
+        }
+
+        .lang-btn {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            padding: 0.5rem 1.4rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .lang-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        main {
+            max-width: 750px;
+            margin: 3.5rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .section-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 4px 16px rgba(47, 128, 237, 0.04); /* 輕盈的藍色陰影 */
+        }
+
+        h2 {
+            color: var(--primary-color);
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--bg-color);
+            padding-bottom: 0.6rem;
+        }
+
+        p {
+            margin-bottom: 1.4rem;
+        }
+
+        ul {
+            padding-left: 1.5rem;
+            margin-bottom: 1.4rem;
+        }
+
+        li {
+            margin-bottom: 1rem;
+        }
+
+        strong {
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        footer {
+            text-align: center;
+            padding: 3rem;
+            color: #7f8c8d;
+            font-size: 0.95rem;
+        }
+
+        /* 語系切換顯示控制 */
+        [lang="en"] {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <div class="logo">
+                <span class="lang-zh">👋 嗨！歡迎光臨</span>
+                <span class="lang-en" style="display:none;">Hi! Welcome</span>
+            </div>
+            <button class="lang-btn" onclick="toggleLanguage()">English</button>
+        </div>
+    </header>
+
+    <main>
+        <!-- 初衷區塊 -->
+        <section class="section-card">
+            <!-- 中文版 -->
+            <div class="lang-zh">
+                <h2>✨ 建立這個地方的初衷</h2>
+                <p>很高興你能逛到這裡！當初會想做這個網站，想法其實很簡單：就是想把自己覺得實用、好玩的資訊和一些生活觀點記錄下來，分享給需要的人。我們始終相信，知識和經驗如果能流動起來，就能帶給人一些小小的啟發或幫助。</p>
+                <p>不論你是為了找某個問題的答案、想學新東西，還是不小心迷路點進來的，都希望你在這裡能有一點點收穫，逛得開心、覺得實用！</p>
+            </div>
+            
+            <!-- 英文版 -->
+            <div class="lang-en">
+                <h2>✨ Why We Built This Space</h2>
+                <p>Hey there! We are so glad you found us. The idea behind starting this website was simple: we wanted to share useful tips, fun insights, and thoughts that might make your day a little easier or brighter. We love the idea of sharing what we know, hoping it brings a spark of inspiration to your journey.</p>
+                <p>Whether you're looking for an answer, trying to pick up a new skill, or just casually browsing, we hope you find something helpful here. Enjoy your stay!</p>
+            </div>
+        </section>
+
+        <!-- 免責聲明區塊 -->
+        <section class="section-card">
+            <!-- 中文版 -->
+            <div class="lang-zh">
+                <h2>💡 逛網站的小叮嚀</h2>
+                <p>在開始閱讀之前，有幾件貼心的小事情想先跟你說明一下：</p>
+                <ul>
+                    <li><strong>個人經驗僅供參考：</strong>這裡分享的內容純粹是我們的個人心得和整理，並不算是專業的醫療、法律或理財投資建議。每個人的情況都不同，做重要決定前，還是要記得諮詢專業人士喔！</li>
+                    <li><strong>記得保持獨立思考：</strong>我們在寫文章時會盡量檢查、確保資料是正確的，但有時候世界變化太快，內容可能無法百分之百即時更新。如果因為參考這裡的資訊而做了某些決定，過程中的風險還是要由你為自己把關喔。</li>
+                    <li><strong>外面的網站不歸我們管：</strong>有時候我們會在文章裡分享其他網站的連結，那些是別人的地盤，如果點過去之後他們的內容或隱私政策有調整，我們就沒辦法幫忙負責囉。</li>
+                </ul>
+            </div>
+            
+            <!-- 英文版 -->
+            <div class="lang-en">
+                <h2>💡 A Friendly Reminder</h2>
+                <p>Before you dive in, here are a few gentle things we'd like to share, just to keep everyone on the same page:</p>
+                <ul>
+                    <li><strong>Just for Reference:</strong> Everything shared here is based on our own experiences and research. It's not intended as professional advice (like medical, legal, or financial advice). Since everyone's situation is unique, it's always best to consult a professional for big decisions!</li>
+                    <li><strong>Trust Your Judgment:</strong> We do our absolute best to keep things accurate, but things change fast, and we might miss an update. If you make plans based on what you read here, we can't take responsibility for how things turn out, so please trust your own judgment too.</li>
+                    <li><strong>Other People's Links:</strong> Sometimes we link to external websites. Since we don't own those sites, we can't control or take responsibility for what they post or how they handle your privacy.</li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Your Project Name. Made with 💙</p>
+    </footer>
+
+    <script>
+        // 中英文切換邏輯
+        let currentLang = 'zh';
+
+        function toggleLanguage() {
+            const zhElements = document.querySelectorAll('.lang-zh');
+            const enElements = document.querySelectorAll('.lang-en');
+            const btn = document.querySelector('.lang-btn');
+
+            if (currentLang === 'zh') {
+                zhElements.forEach(el => el.style.display = 'none');
+                enElements.forEach(el => el.style.display = 'block');
+                btn.textContent = '中文';
+                currentLang = 'en';
+            } else {
+                zhElements.forEach(el => el.style.display = 'block');
+                enElements.forEach(el => el.style.display = 'none');
+                btn.textContent = 'English';
+                currentLang = 'zh';
+            }
+        }
+    </script>
+</body>
+</html>
