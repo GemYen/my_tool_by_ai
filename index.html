@@ -19,7 +19,6 @@
         }
 
         body {
-            /* 優先使用微軟正黑體、Calibri 與 Open Sans，皆為粗細一致的無襯線字體 */
             font-family: 'Open Sans', 'Noto Sans TC', 'Microsoft JhengHei', Calibri, Arial, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
@@ -82,23 +81,111 @@
             padding: 0 1.5rem;
         }
 
-        .section-card {
+        /* 可摺疊卡片樣式 */
+        .collapsible-card {
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 12px;
-            padding: 2.5rem;
-            margin-bottom: 2.5rem;
-            box-shadow: 0 4px 16px rgba(47, 128, 237, 0.04); /* 輕盈的藍色陰影 */
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 12px rgba(47, 128, 237, 0.02);
+            overflow: hidden;
         }
 
-        h2 {
+        /* 摺疊標題點擊區域 */
+        summary {
+            padding: 1.5rem 2rem;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            cursor: pointer;
+            list-style: none; /* 隱藏瀏覽器預設箭頭 */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+        }
+
+        /* 自訂展開/摺疊的右側加號圖示 */
+        summary::after {
+            content: '＋';
+            font-size: 1.2rem;
+            transition: transform 0.2s;
+        }
+
+        /* 當卡片被打開時，加號旋轉變成乘號，或換成減號 */
+        details[open] summary::after {
+            content: '－';
+        }
+
+        /* 展開後內文的容器 */
+        .details-content {
+            padding: 0 2rem 2rem 2rem;
+            border-top: 1px solid #f0f6fc;
+            padding-top: 1.5rem;
+        }
+
+        /* 我的工具常駐卡片區塊 */
+        .tool-card {
+            background-color: var(--card-bg);
+            border: 2px dashed var(--primary-color); /* 虛線框突顯工具區 */
+            border-radius: 12px;
+            padding: 2.5rem;
+            margin-top: 3rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 4px 16px rgba(47, 128, 237, 0.04);
+        }
+
+        .tool-card h2 {
             color: var(--primary-color);
             font-size: 1.6rem;
             font-weight: 600;
             margin-top: 0;
-            margin-bottom: 1.5rem;
-            border-bottom: 2px solid var(--bg-color);
-            padding-bottom: 0.6rem;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .tool-subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        /* 按鈕基本樣式 */
+        .btn-link {
+            display: inline-block;
+            background-color: #2f80ed;
+            color: white;
+            text-decoration: none;
+            padding: 1rem 2.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(47, 128, 237, 0.2);
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .btn-link:hover {
+            background-color: #1b6fd1;
+        }
+
+        .btn-link:active {
+            transform: scale(0.98);
+        }
+
+        /* 討論區次要按鈕樣式 */
+        .btn-secondary {
+            background-color: #ffffff;
+            color: #555555;
+            border: 1px solid #cccccc;
+            box-shadow: none;
+            margin-top: 1rem;
+            padding: 0.8rem 2rem;
+            font-size: 0.95rem;
+        }
+
+        .btn-secondary:hover {
+            background-color: #f8f9fa;
+            color: #333333;
         }
 
         p {
@@ -145,83 +232,58 @@
     </header>
 
     <main>
-        <!-- 初衷區塊 -->
-        <section class="section-card">
-            <!-- 中文版 -->
-            <div class="lang-zh">
-                <h2>✨ 建立這個地方的初衷</h2>
-                <p>很高興你能逛到這裡！當初會想做這個網站，想法其實很簡單：就是想把自己覺得實用、好玩的資訊和一些生活觀點記錄下來，分享給需要的人。我們始終相信，知識和經驗如果能流動起來，就能帶給人一些小小的啟發或幫助。</p>
-                <p>不論你是為了找某個問題的答案、想學新東西，還是不小心迷路點進來的，都希望你在這裡能有一點點收穫，逛得開心、覺得實用！</p>
+        
+        <!-- 可摺疊區塊一：初衷 (預設收合) -->
+        <details class="collapsible-card">
+            <summary>
+                <span class="lang-zh">✨ 建立這個地方的初衷</span>
+                <span class="lang-en" style="display:none;">✨ Why We Built This Space</span>
+            </summary>
+            <div class="details-content">
+                <!-- 中文版 -->
+                <div class="lang-zh">
+                    <p>很高興你能逛到這裡！當初會想做這個網站，想法其實很簡單：就是想把自己覺得實用、好玩的資訊和一些生活觀點記錄下來，分享給需要的人。我們始終相信，知識和經驗如果能流動起來，就能帶給人一些小小的啟發或幫助。</p>
+                    <p>不論你是為了找某個問題的答案、想學新東西，還是不小心迷路點進來的，都希望你在這裡能有一點點收穫，逛得開心、覺得實用！</p>
+                </div>
+                <!-- 英文版 -->
+                <div class="lang-en">
+                    <p>Hey there! We are so glad you found us. The idea behind starting this website was simple: we wanted to share useful tips, fun insights, and thoughts that might make your day a little easier or brighter. We love the idea of sharing what we know, hoping it brings a spark of inspiration to your journey.</p>
+                    <p>Whether you're looking for an answer, trying to pick up a new skill, or just casually browsing, we hope you find something helpful here. Enjoy your stay!</p>
+                </div>
             </div>
-            
-            <!-- 英文版 -->
-            <div class="lang-en">
-                <h2>✨ Why We Built This Space</h2>
-                <p>Hey there! We are so glad you found us. The idea behind starting this website was simple: we wanted to share useful tips, fun insights, and thoughts that might make your day a little easier or brighter. We love the idea of sharing what we know, hoping it brings a spark of inspiration to your journey.</p>
-                <p>Whether you're looking for an answer, trying to pick up a new skill, or just casually browsing, we hope you find something helpful here. Enjoy your stay!</p>
+        </details>
+
+        <!-- 可摺疊區塊二：小叮嚀 (預設收合) -->
+        <details class="collapsible-card">
+            <summary>
+                <span class="lang-zh">💡 逛網站的小叮嚀</span>
+                <span class="lang-en" style="display:none;">💡 A Friendly Reminder</span>
+            </summary>
+            <div class="details-content">
+                <!-- 中文版 -->
+                <div class="lang-zh">
+                    <p>在開始閱讀之前，有幾件貼心的小事情想先跟你說明一下：</p>
+                    <ul>
+                        <li><strong>個人經驗僅供參考：</strong>這裡分享的內容純粹是我們的個人心得和整理，並不算是專業的醫療、法律或理財投資建議。每個人的情況都不同，做重要決定前，還是要記得諮詢專業人士喔！</li>
+                        <li><strong>記得保持獨立思考：</strong>我們在寫文章時會盡量檢查、確保資料是正確的，但有時候世界變化太快，內容可能無法百分之百即時更新。如果因為參考這裡的資訊而做了某些決定，過程中的風險還是要由你為自己把關喔。</li>
+                        <li><strong>外面的網站不歸我們管：</strong>有時候我們會在文章裡分享其他網站的連結，那些是別人的地盤，如果點過去之後他們的內容或隱私政策有調整，我們就沒辦法幫忙負責囉。</li>
+                    </ul>
+                </div>
+                <!-- 英文版 -->
+                <div class="lang-en">
+                    <p>Before you dive in, here are a few gentle things we'd like to share, just to keep everyone on the same page:</p>
+                    <ul>
+                        <li><strong>Just for Reference:</strong> Everything shared here is based on our own experiences and research. It's not intended as professional advice (like medical, legal, or financial advice). Since everyone's situation is unique, it's always best to consult a professional for big decisions!</li>
+                        <li><strong>Trust Your Judgment:</strong> We do our absolute best to keep things accurate, but things change fast, and we might miss an update. If you make plans based on what you read here, we can't take responsibility for how things turn out, so please trust your own judgment too.</li>
+                        <li><strong>Other People's Links:</strong> Sometimes we link to external websites. Since we don't own those sites, we can't control or take responsibility for what they post or how they handle your privacy.</li>
+                    </ul>
+                </div>
             </div>
-        </section>
+        </details>
 
-        <!-- 免責聲明區塊 -->
-        <section class="section-card">
-            <!-- 中文版 -->
-            <div class="lang-zh">
-                <h2>💡 逛網站的小叮嚀</h2>
-                <p>在開始閱讀之前，有幾件貼心的小事情想先跟你說明一下：</p>
-                <ul>
-                    <li><strong>個人經驗僅供參考：</strong>這裡分享的內容純粹是我們的個人心得和整理，並不算是專業的醫療、法律或理財投資建議。每個人的情況都不同，做重要決定前，還是要記得諮詢專業人士喔！</li>
-                    <li><strong>記得保持獨立思考：</strong>我們在寫文章時會盡量檢查、確保資料是正確的，但有時候世界變化太快，內容可能無法百分之百即時更新。如果因為參考這裡的資訊而做了某些決定，過程中的風險還是要由你為自己把關喔。</li>
-                    <li><strong>外面的網站不歸我們管：</strong>有時候我們會在文章裡分享其他網站的連結，那些是別人的地盤，如果點過去之後他們的內容或隱私政策有調整，我們就沒辦法幫忙負責囉。</li>
-                </ul>
-            </div>
-            
-            <!-- 英文版 -->
-            <div class="lang-en">
-                <h2>💡 A Friendly Reminder</h2>
-                <p>Before you dive in, here are a few gentle things we'd like to share, just to keep everyone on the same page:</p>
-                <ul>
-                    <li><strong>Just for Reference:</strong> Everything shared here is based on our own experiences and research. It's not intended as professional advice (like medical, legal, or financial advice). Since everyone's situation is unique, it's always best to consult a professional for big decisions!</li>
-                    <li><strong>Trust Your Judgment:</strong> We do our absolute best to keep things accurate, but things change fast, and we might miss an update. If you make plans based on what you read here, we can't take responsibility for how things turn out, so please trust your own judgment too.</li>
-                    <li><strong>Other People's Links:</strong> Sometimes we link to external websites. Since we don't own those sites, we can't control or take responsibility for what they post or how they handle your privacy.</li>
-                </ul>
-            </div>
-        </section>
-        <!-- 免責聲明區塊結束 -->
-        </section>
-
-        <!-- 貼心的討論區傳送門按鈕 -->
-        <div style="text-align: center; margin-top: 3rem; margin-bottom: 1rem;">
-            <a href="你的網址" target="_blank" style="...後續省略...">
-                💬 前往我們的討論區 / Go to Discussions
-            </a>
-        </div>
-    </main>
-
-    <footer>
-        <p>&copy; 2026 Your Project Name. Made with 💙</p>
-    </footer>
-
-    <script>
-        // 中英文切換邏輯
-        let currentLang = 'zh';
-
-        function toggleLanguage() {
-            const zhElements = document.querySelectorAll('.lang-zh');
-            const enElements = document.querySelectorAll('.lang-en');
-            const btn = document.querySelector('.lang-btn');
-
-            if (currentLang === 'zh') {
-                zhElements.forEach(el => el.style.display = 'none');
-                enElements.forEach(el => el.style.display = 'block');
-                btn.textContent = '中文';
-                currentLang = 'en';
-            } else {
-                zhElements.forEach(el => el.style.display = 'block');
-                enElements.forEach(el => el.style.display = 'none');
-                btn.textContent = 'English';
-                currentLang = 'zh';
-            }
-        }
-    </script>
-</body>
-</html>
+        <!-- 常駐區塊三：我的工具箱 (My Tool) -->
+        <section class="tool-card">
+            <h2>
+                <span class="lang-zh">🛠️ 我的線上工具</span>
+                <span class="lang-en" style="display:none;">🛠️ My Online Tool</span>
+            </h2>
