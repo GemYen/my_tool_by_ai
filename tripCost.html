@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>出遊費用分帳計算機</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 800px; margin: auto; background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        h1, h2 { color: #2c3e50; border-bottom: 2px solid #eaeaea; padding-bottom: 8px; margin-top: 0; }
+        .section { margin-bottom: 30px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 14px; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 14px; }
+        button { background-color: #3498db; color: white; border: none; padding: 10px 18px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600; }
+        button:hover { background-color: #2980b9; }
+        button.danger { background-color: #e74c3c; }
+        button.danger:hover { background-color: #c0392b; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #f8f9fa; }
+        .result-card { background: #e8f8f5; border: 1px solid #a3e4d7; padding: 15px; border-radius: 8px; margin-bottom: 10px; }
+        .tag { display: inline-block; padding: 2px 8px; font-size: 12px; border-radius: 4px; background: #d6eaf8; color: #2980b9; }
+        .tag-personal { background: #fdebd0; color: #d35400; }
+        .flex-row { display: flex; gap: 10px; }
+        .btn-group { display: flex; gap: 10px; margin-top: 15px; align-items: center; }
+        button.secondary { background-color: #7f8c8d; }
+        button.secondary:hover { background-color: #95a5a6; }
+        .save-tip { font-size: 13px; color: #27ae60; font-weight: bold; margin-left: 10px; opacity: 0; transition: opacity 0.3s; }
+        .save-tip.show { opacity: 1; }
+
+        /* ⬇️ 正確安放：下載 PDF 按鈕樣式 ⬇️ */
+        button.info { background-color: #2ecc71; color: white; }
+        button.info:hover { background-color: #27ae60; }
+
+        /* 核心：定義 PDF 列印/匯出時的畫面輸出規則 */
+        @media print {
+            body { background-color: #fff; padding: 0; }
+            .container { box-shadow: none; max-width: 100%; padding: 0; }
+            h1 { text-align: center; border-bottom: 3px solid #333; }
+            .section:nth-of-type(1), 
+            .section:nth-of-type(2), 
+            .section:nth-of-type(5), 
+            button, .tag a { display: none !important; } 
+            table { border: 1px solid #000; }
+            th, td { border: 1px solid #000; }
+            .result-card { border: 1px solid #666; background: #fff !important; page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>出遊費用分帳計算機</h1>
+
+    <!-- 1. 設定成員 -->
+    <div class="section">
+        <h2>1. 參與成員</h2>
+        <div class="flex-row">
+            <input type="text" id="memberName" placeholder="輸入成員名字（如：小明）">
+            <button type="button" id="btnAddMember">新增成員</button>
+        </div>
+        <div id="memberList" style="margin-top: 10px;"></div>
+    </div>
+
+    <!-- 2. 新增花費 -->
+    <div class="section">
+        <h2>2. 記錄花費</h2>
+        <div class="form-group">
+            <label>花費名目（品項）</label>
+            <input type="text" id="expenseTitle" placeholder="例如：晚餐、門票、計程車">
+        </div>
+        <div class="form-group">
+            <label>金額 (NTD)</label>
+            <input type="number" id="expenseAmount" placeholder="0">
+        </div>
+        <div class="form-group">
+            <label>誰付的錢？</label>
+            <select id="expensePayer"></select>
+        </div>
+        <div class="form-group">
+            <label>費用屬性</label>
+            <select id="expenseType" onchange="toggleTargetMember()">
+                <option value="shared">共用費用（參與者平分）</option>
+                <option value="personal">各別費用（指定個人）</option>
+            </select>
+        </div>
+        <div class="form-group" id="targetMemberGroup" style="display:none;">
+            <label>屬於誰的各別費用？</label>
+            <select id="expenseTarget"></select>
+        </div>
+        <button type="button" id="btnAddExpense">新增這筆花費</button>
+    </div>
+
+    <!-- 3. 花費列表 -->
+    <div class="section">
+        <h2>3. 帳目明細</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>名目</th>
+                    <th>金額</th>
+                    <th>付款人</th>
+                    <th>類別 / 對象</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody id="expenseTableBody">
+                <tr><td colspan="5" style="text-align:center; color:#888;">尚未記錄任何花費</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 4. 計算結果 -->
+    <div class="section">
+        <h2>4. 結算總費用</h2>
+        <div id="resultArea">
+            <p style="color:#888;">請先新增成員與花費來查看計算結果。</p>
+        </div>
+    </div>
+
+    <!-- 5. 資料管理控制區塊 -->
+    <div class="section" style="margin-top: 20px; border-top: 1px dashed #ccc; padding-top: 20px;">
+        <h2>5. 暫存資料管理</h2>
+        <div class="btn-group">
+            <button type="button" id="btnSaveManual" class="secondary">手動儲存資料</button>
+            <button type="button" id="btnDownloadPDF" class="info">下載 PDF 結算報告</button>
+            <button type="button" id="btnClearStorage" class="danger">清空所有紀錄</button>
+            <span id="saveTip" class="save-tip">資料已安全儲存</span>
+        </div>
+    </div>
+</div>
+<script>
+    var members = [];
+    var expenses = [];
+
+    function isStorageAvailable() {
+        try {
+            localStorage.setItem('__test__', '1');
+            localStorage.removeItem('__test__');
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    window.onload = function() {
+        if (isStorageAvailable()) {
+            var savedMembers = localStorage.getItem('bill_members');
+            var savedExpenses = localStorage.getItem('bill_expenses');
+            if (savedMembers) { members = JSON.parse(savedMembers); }
+            if (savedExpenses) { expenses = JSON.parse(savedExpenses); }
+        }
+        
+        document.getElementById('btnAddMember').onclick = addMember;
+        document.getElementById('btnAddExpense').onclick = addExpense;
+        document.getElementById('btnSaveManual').onclick = saveToStorageManual;
+        document.getElementById('btnClearStorage').onclick = clearStorage;
+        document.getElementById('btnDownloadPDF').onclick = downloadPDF;
+        
+        updateUI(); 
+    };
+
+    function saveToStorage() {
+        if (!isStorageAvailable()) return;
+        try {
+            localStorage.setItem('bill_members', JSON.stringify(members));
+            localStorage.setItem('bill_expenses', JSON.stringify(expenses));
+        } catch (e) {
+            console.error('儲存快取失敗。');
+        }
+    }
+
+    function showSaveNotification() {
+        var tip = document.getElementById('saveTip');
+        if (tip) {
+            tip.classList.add('show');
+            setTimeout(function() { tip.classList.remove('show'); }, 2000);
+        }
+    }
+
+    function saveToStorageManual() {
+        if (!isStorageAvailable()) {
+            alert('當前瀏覽器限制了本地檔案存取快取，資料僅能在不關閉網頁下即時運作。');
+            return;
+        }
+        saveToStorage();
+        showSaveNotification();
+    }
+
+    function clearStorage() {
+        if (confirm('確定要清空所有成員與花費紀錄嗎？此動作無法復原。')) {
+            if (isStorageAvailable()) {
+                localStorage.removeItem('bill_members');
+                localStorage.removeItem('bill_expenses');
+            }
+            members = [];
+            expenses = [];
+            updateUI();
+        }
+    }
+
+    function addMember() {
+        var nameInput = document.getElementById('memberName');
+        if (!nameInput) return;
+        var name = nameInput.value.trim();
+        if (!name) return alert('請輸入名字');
+        if (members.indexOf(name) !== -1) return alert('名字重複了');
+        
+        members.push(name);
+        nameInput.value = '';
+        updateUI();
+    }
+
+    function removeMember(name) {
+        members = members.filter(function(m) { return m !== name; });
+        expenses = expenses.filter(function(e) { return e.payer !== name && e.target !== name; });
+        updateUI();
+    }
+
+    function toggleTargetMember() {
+        var type = document.getElementById('expenseType').value;
+        var group = document.getElementById('targetMemberGroup');
+        if (group) {
+            group.style.display = (type === 'personal') ? 'block' : 'none';
+        }
+    }
+
+    function addExpense() {
+        var title = document.getElementById('expenseTitle').value.trim();
+        var amount = parseFloat(document.getElementById('expenseAmount').value);
+        var payer = document.getElementById('expensePayer').value;
+        var type = document.getElementById('expenseType').value;
+        var target = document.getElementById('expenseTarget').value;
+
+        if (!title) return alert('請輸入花費名目');
+        if (isNaN(amount) || amount <= 0) return alert('請輸入正確金額');
+        if (!payer) return alert('請選擇付款人');
+        if (type === 'personal' && !target) return alert('請選擇各別費用的對象');
+
+        expenses.push({
+            id: Date.now(),
+            title: title,
+            amount: amount,
+            payer: payer,
+            type: type,
+            target: type === 'personal' ? target : null
+        });
+
+        document.getElementById('expenseTitle').value = '';
+        document.getElementById('expenseAmount').value = '';
+        updateUI();
+    }
+
+    function removeExpense(id) {
+        expenses = expenses.filter(function(e) { return e.id !== id; });
+        updateUI();
+    }
+
+    function updateUI() {
+        var memberListDiv = document.getElementById('memberList');
+        if (memberListDiv) {
+            if (members.length === 0) {
+                memberListDiv.innerHTML = '<span style="color:#888; font-size:13px;">尚未加入成員</span>';
+            } else {
+                memberListDiv.innerHTML = members.map(function(m) {
+                    return '<span class="tag" style="margin-right:5px; margin-bottom:5px;">' + m + ' <a href="javascript:void(0)" onclick="removeMember(\'' + m + '\')" style="color:#c0392b; text-decoration:none; margin-left:5px;">&times;</a></span>';
+                }).join('');
+            }
+        }
+
+        var payerSelect = document.getElementById('expensePayer');
+        var targetSelect = document.getElementById('expenseTarget');
+        if (payerSelect && targetSelect) {
+            payerSelect.innerHTML = members.map(function(m) { return '<option value="' + m + '">' + m + '</option>'; }).join('');
+            targetSelect.innerHTML = members.map(function(m) { return '<option value="' + m + '">' + m + '</option>'; }).join('');
+            if(members.length === 0) {
+                payerSelect.innerHTML = '<option value="">請先新增成員</option>';
+                targetSelect.innerHTML = '<option value="">請先新增成員</option>';
+            }
+        }
+
+        var tbody = document.getElementById('expenseTableBody');
+        if (tbody) {
+            if (expenses.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#888;">尚未記錄任何花費</td></tr>';
+            } else {
+                tbody.innerHTML = expenses.map(function(e) { 
+                    var typeLabel = e.type === 'shared' ? '<span class="tag">共用(平分)</span>' : '<span class="tag tag-personal">各別: ' + e.target + '</span>';
+                    return '<tr>' +
+                        '<td>' + e.title + '</td>' +
+                        '<td>$' + e.amount + '</td>' +
+                        '<td>' + e.payer + '</td>' +
+                        '<td>' + typeLabel + '</td>' +
+                        '<td><button class="danger" style="padding:4px 8px; font-size:12px;" onclick="removeExpense(' + e.id + ')">刪除</button></td>' +
+                    '</tr>';
+                }).join('');
+            }
+        }
+
+        calculateResults();
+        saveToStorage();
+    }
+
+    function calculateResults() {
+        var resultArea = document.getElementById('resultArea');
+        if (!resultArea) return;
+        
+        if (members.length === 0) {
+            resultArea.innerHTML = '<p style="color:#888;">請先新增成員與花費來查看計算結果。</p>';
+            return;
+        }
+
+        var stats = {};
+        members.forEach(function(m) {
+            stats[m] = { paid: 0, shouldPay: 0, sharedCost: 0, personalCost: 0 };
+        });
+
+        expenses.forEach(function(e) {
+            if (stats[e.payer]) {
+                stats[e.payer].paid += e.amount;
+            }
+
+            if (e.type === 'shared') {
+                var splitAmount = e.amount / members.length;
+                members.forEach(function(m) {
+                    stats[m].sharedCost += splitAmount;
+                    stats[m].shouldPay += splitAmount;
+                });
+            } else if (e.type === 'personal' && e.target) {
+                if (stats[e.target]) {
+                    stats[e.target].personalCost += e.amount;
+                    stats[e.target].shouldPay += e.amount;
+                }
+            }
+        });
+
+        var html = '';
+        members.forEach(function(m) {
+            var s = stats[m];
+            var balance = s.paid - s.shouldPay;
+            var balanceText = balance >= 0 ? 
+                '<span style="color:#27ae60;">可拿回 $' + balance.toFixed(1) + '</span>' : 
+                '<span style="color:#c0392b;">需再付 $' + Math.abs(balance).toFixed(1) + '</span>';
+                
+            html += '<div class="result-card">' +
+                '<strong>' + m + '</strong><br>' +
+                '• 實際付款：$' + s.paid.toFixed(1) + '<br>' +
+                '• 應付總額：$' + s.shouldPay.toFixed(1) + ' (共用分攤 $' + s.sharedCost.toFixed(1) + ' + 各別專屬 $' + s.personalCost.toFixed(1) + ')<br>' +
+                '• <strong>結算：' + balanceText + '</strong>' +
+            '</div>';
+        });
+        resultArea.innerHTML = html;
+    }
+
+    function downloadPDF() {
+        if (members.length === 0) {
+            alert('目前沒有成員資料，無法產生報告。');
+            return;
+        }
+        window.print();
+    }
+</script>
+</body>
+</html>
