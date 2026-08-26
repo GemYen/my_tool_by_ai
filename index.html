@@ -133,6 +133,7 @@
             margin-top: 3rem;
             margin-bottom: 2.5rem;
             box-shadow: 0 4px 16px rgba(47, 128, 237, 0.04);
+            text-align: center;
         }
 
         .tool-card h2 {
@@ -287,3 +288,52 @@
                 <span class="lang-zh">🛠️ 我的線上工具</span>
                 <span class="lang-en" style="display:none;">🛠️ My Online Tool</span>
             </h2>
+            <div class="tool-subtitle">
+                <span class="lang-zh">點擊下方按鈕即可直接開啟並使用工具</span>
+                <span class="lang-en" style="display:none;">Click the button below to launch the app</span>
+            </div>
+            
+            <!-- 前往工具的傳送門按鈕 (導向您建立的 tool 資料夾) -->
+            <div>
+                <a href="./tool/" class="btn-link">
+                    🚀 開啟工具頁面 / Launch Tool
+                </a>
+            </div>
+            
+            <!-- 討論區傳送門按鈕 (置於下方作為次要按鈕) -->
+            <div>
+                <a href="https://github.com" target="_blank" class="btn-link btn-secondary">
+                    💬 參與社群討論 / Join Discussions
+                </a>
+            </div>
+        </section>
+
+    </main>
+    <footer>
+        <p>&copy; 2026 Your Project Name. Made with 💙</p>
+    </footer>
+
+    <script>
+        // 中英文切換邏輯
+        let currentLang = 'zh';
+
+        function toggleLanguage() {
+            const zhElements = document.querySelectorAll('.lang-zh');
+            const enElements = document.querySelectorAll('.lang-en');
+            const btn = document.querySelector('.lang-btn');
+
+            if (currentLang === 'zh') {
+                zhElements.forEach(el => el.style.display = 'none');
+                enElements.forEach(el => el.style.display = 'block');
+                btn.textContent = '中文';
+                currentLang = 'en';
+            } else {
+                zhElements.forEach(el => el.style.display = 'block');
+                enElements.forEach(el => el.style.display = 'none');
+                btn.textContent = 'English';
+                currentLang = 'zh';
+            }
+        }
+    </script>
+</body>
+</html>
